@@ -1,0 +1,357 @@
+/*
+-- MySQL Workbench Forward Engineering
+-- -----------------------------------------------------
+-- Schema careerHub
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema careerHub
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `careerHub` DEFAULT CHARACTER SET utf8 ;
+USE `careerHub` ;
+-- -----------------------------------------------------
+-- Table `careerHub`.`companies`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `careerHub`.`companies` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `company_name` VARCHAR(255) NOT NULL,
+  `location` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+-- -----------------------------------------------------
+-- Table `careerHub`.`jobs`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `careerHub`.`jobs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `job_title` VARCHAR(255) NOT NULL,
+  `job_description` VARCHAR(255) NOT NULL,
+  `job_location` VARCHAR(45) NULL,
+  `salary` DOUBLE NULL,
+  `job_type` VARCHAR(45) NULL,
+  `posted_date` DATE NULL,
+  `company_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `company_id`),
+  INDEX `fk_jobs_companies_idx` (`company_id` ASC) ,
+  CONSTRAINT `fk_jobs_companies`
+    FOREIGN KEY (`company_id`)
+    REFERENCES `careerHub`.`companies` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+-- -----------------------------------------------------
+-- Table `careerHub`.`applicants`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `careerHub`.`applicants` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `first_name` VARCHAR(45) NULL,
+  `last_name` VARCHAR(45) NULL,
+  `email` VARCHAR(45) NULL,
+  `phone` INT NULL,
+  `resume` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `careerHub`.`application`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `careerHub`.`application` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `application_date` DATE NULL,
+  `coverletter` VARCHAR(45) NULL,
+  `job_id` INT NOT NULL,
+  `applicant_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `job_id`, `applicant_id`),
+  INDEX `fk_application_jobs1_idx` (`job_id` ASC) ,
+  INDEX `fk_application_applicants1_idx` (`applicant_id` ASC) ,
+  CONSTRAINT `fk_application_jobs1`
+    FOREIGN KEY (`job_id`)
+    REFERENCES `careerHub`.`jobs` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_application_applicants1`
+    FOREIGN KEY (`applicant_id`)
+    REFERENCES `careerHub`.`applicants` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+*/
+use careerHub;
+show tables;
+/*
+applicants
+application
+companies
+jobs
+*/
+describe applicants;
+describe application;
+describe companies;
+describe jobs;
+insert into companies(company_name,location) values
+('hexaware','chennai'),
+('makingMinds','chennai'),
+('pinesphere','bengaluru'),
+('apples','pune'),
+('walmart','coimbatore'),
+('google','pune');
+select * from companies;
+/*
+1	hexaware	chennai
+2	makingMinds	chennai
+3	pinesphere	bengaluru
+4	apples	pune
+5	walmart	coimbatore
+6	google	pune
+*/
+insert into applicants(first_name,last_name,email,phone,resume) values
+('harry','potter','harry@gmail.com',7645362, 'harry.pdf'),
+('stefan','gilbert','stefan@gmail.com',7234572, 'stefan.txt'),
+('elena','salvatore','elena@gmail.com',8045362, 'elena.pdf'),
+('bonnie','bennet','bonnie@gmail.com',9115362, 'bon.dox'),
+('sam','curran','sam13@gmail.com',8787362, 'sam.txt');
+select * from applicants;
+/*
+1	harry	potter	harry@gmail.com	7645362	harry.pdf
+2	stefan	gilbert	stefan@gmail.com	7234572	stefan.txt
+3	elena	salvatore	elena@gmail.com	8045362	elena.pdf
+4	bonnie	bennet	bonnie@gmail.com	9115362	bon.dox
+5	sam	curran	sam13@gmail.com	8787362	sam.txt
+*/
+insert into jobs(job_title,job_description,job_location,salary,job_type,posted_date,company_id) values
+       ('UX Designer', 'Designing user interfaces', 'chennai', 95000, 'part-time', '2024-04-10', 2),
+       ('Software Developer', 'Building backend systems', 'pune', 110000, 'Full-time', '2024-04-10', 3),
+       ('Data Analyst', 'Analyzing data trends', 'coimbatore', 85000, 'Full-time', '2024-04-10', 2),
+       ('iOS Developer', 'Developing mobile applications', 'pune', 105000, 'part-time', '2024-04-10', 1),
+       ('Digital Marketer', 'Executing online marketing campaigns', 'bengaluru', 90000, 'Full-time', '2024-04-10', 4);
+select * from jobs;
+/*
+1	UX Designer	Designing user interfaces	chennai	95000	part-time	2024-04-10	2
+2	Software Developer	Building backend systems	pune	110000	Full-time	2023-12-10	3
+3	Data Analyst	Analyzing data trends	coimbatore	85000	Full-time	2024-01-11	2
+4	iOS Developer	Developing mobile applications	pune	105000	part-time	2024-02-03	1
+5	Digital Marketer	Executing online marketing campaigns	bengaluru	90000	Full-time	2023-11-14	4
+*/
+insert into application (application_date, coverletter, job_id, applicant_id)
+values ('2024-04-4', 'I have a strong passion for UX design.', 1, 3),
+       ('2024-06-07', 'Excited to contribute to your software team.', 3, 4),
+       ('2024-07-3', 'I am skilled in data analysis techniques.', 2, 5),
+       ('2024-02-11', 'Looking forward to developing iOS apps.', 4, 1),
+       ('2023-12-10', 'I have experience in digital marketing strategies.', 5, 2);
+select * from application;       
+/*
+6	2024-04-04	I have a strong passion for UX design.	1	3
+7	2024-06-07	Excited to contribute to your software team.	3	4
+8	2024-07-03	I am skilled in data analysis techniques.	2	5
+9	2024-02-11	Looking forward to developing iOS apps.	4	1
+10	2023-12-10	I have experience in digital marketing strate	5	2
+*/
+UPDATE jobs
+SET posted_date = '2023-12-10'
+WHERE id = 2;
+/*
+j.id=ap.job_id
+c.id=j.company_id
+a.id=ap.applicant_id
+a=applicant, ap=application
+*/
+/*
+5. Write an SQL query to count the number of applications received for each job listing in the 
+"Jobs" table. Display the job title and the corresponding application count. Ensure that it lists all 
+jobs, even if they have no applications.
+*/
+select j.job_title, count(ap.id) as no_of_applications from jobs j 
+			 join application ap on j.id=ap.job_id group by j.job_title;
+/*
+Data Analyst	1
+Digital Marketer	1
+iOS Developer	1
+Software Developer	1
+UX Designer	1
+*/             
+/*
+6. Develop an SQL query that retrieves job listings from the "Jobs" table within a specified salary 
+range. Allow parameters for the minimum and maximum salary values. Display the job title, 
+company name, location, and salary for each matching job.
+*/
+select j.job_title,c.company_name,c.location,j.salary from jobs j
+              join companies c on c.id=j.company_id where j.salary between 90000 and 110000;
+/*
+UX Designer	makingMinds	chennai	95000
+Software Developer	pinesphere	bengaluru	110000
+iOS Developer	hexaware	chennai	105000
+Digital Marketer	apples	pune	90000
+*/    
+/*
+7. Write an SQL query that retrieves the job application history for a specific applicant. Allow a 
+parameter for the ApplicantID, and return a result set with the job titles, company names, and 
+application dates for all the jobs the applicant has applied to.
+*/          
+select j.job_title,c.company_name, ap.application_date, a.id, a.first_name  from jobs j 
+			join companies c on c.id=j.company_id
+			join application ap on j.id=ap.job_id
+            join applicants a on a.id=ap.applicant_id where a.id=ap.applicant_id;
+/*
+UX Designer	makingMinds	2024-04-04	3	elena
+Data Analyst	makingMinds	2024-06-07	4	bonnie
+Software Developer	pinesphere	2024-07-03	5	sam
+iOS Developer	hexaware	2024-02-11	1	harry
+Digital Marketer	apples	2023-12-10	2	stefan
+*/ 
+/*
+8. Create an SQL query that calculates and displays the average salary offered by all companies for 
+job listings in the "Jobs" table. Ensure that the query filters out jobs with a salary of zero
+*/          
+select c.company_name,job_title,avg(salary) from jobs j
+                      join companies c on c.id=j.company_id group by j.job_title; 
+/*
+makingMinds	Data Analyst	85000
+apples	Digital Marketer	90000
+hexaware	iOS Developer	105000
+pinesphere	Software Developer	110000
+makingMinds	UX Designer	95000
+*/
+/*
+9. Write an SQL query to identify the company that has posted the most job listings. Display the 
+company name along with the count of job listings they have posted. Handle ties if multiple 
+companies have the same maximum count.
+*/ 
+select c.company_name, count(j.job_title) as total_count from companies c
+			  join jobs j on c.id=j.company_id group by j.job_title order by j.id desc limit 3;
+/*
+apples	1
+hexaware	1
+makingMinds	1
+*/
+/*
+10. Find the applicants who have applied for positions in companies located in 'CityX' and have at 
+least 3 years of experience.
+*/
+select a.first_name,j.job_location from applicants a 
+            join application ap on a.id=ap.applicant_id 
+            join jobs j on j.id=ap.job_id where j.job_location='pune';
+/*
+sam	pune
+harry	pune
+*/
+/*
+11. Retrieve a list of distinct job titles with salaries between $60,000 and $80,000.
+*/    
+select distinct job_title,salary from jobs where salary between 85000 and 100000;       
+/*
+UX Designer	95000
+Data Analyst	85000
+Digital Marketer	90000
+*/
+/*
+12. Find the jobs that have not received any applications.
+*/  
+select j.job_title from jobs j
+left join application ap on j.id = ap.job_id where ap.job_id IS NULL;
+/*
+---
+*/
+/*
+13. Retrieve a list of job applicants along with the companies they have applied to and the positions 
+they have applied for.
+*/
+select a.first_name, c.company_name,j.job_title from jobs j
+              join companies c on c.id=j.company_id 
+              join application ap on j.id = ap.job_id 
+              join applicants a on a.id=ap.applicant_id ;
+/*
+elena	makingMinds	UX Designer
+sam	pinesphere	Software Developer
+bonnie	makingMinds	Data Analyst
+harry	hexaware	iOS Developer
+stefan	apples	Digital Marketer
+*/              
+/*
+14. Retrieve a list of companies along with the count of jobs they have posted, even if they have not 
+received any applications.
+*/
+select c.company_name, count(c.id) from companies c
+              left join jobs j on c.id=j.company_id 
+              left join application ap on j.id = ap.job_id group by c.company_name;
+/*
+apples	1
+google	1
+hexaware	1
+makingMinds	2
+pinesphere	1
+walmart	1
+*/              
+/*
+15. List all applicants along with the companies and positions they have applied for, including those 
+who have not applied
+*/
+select a.first_name,c.company_name,j.job_title from companies c
+			join jobs j on c.id=j.company_id 
+			left join application ap on j.id = ap.job_id 
+            left join applicants a on a.id=ap.applicant_id;
+/*
+elena	makingMinds	UX Designer
+sam	pinesphere	Software Developer
+bonnie	makingMinds	Data Analyst
+harry	hexaware	iOS Developer
+stefan	apples	Digital Marketer
+*/            
+/*
+16. Find companies that have posted jobs with a salary higher than the average salary of all jobs.
+*/
+select c.company_name, j.salary from companies c
+			 join jobs j on c.id=j.company_id where j.salary > (select avg(salary) from jobs);
+/*
+pinesphere	110000
+hexaware	105000
+*/             
+/*
+17. Display a list of applicants with their names and a concatenated string of their city and state
+*/
+select concat(a.first_name, ' ', a.last_name) as applicant_name, c.location 
+from applicants a
+join application ap on a.id = ap.applicant_id
+join jobs j on ap.job_id = j.id
+join companies c on j.company_id = c.id;
+/*
+harry potter	chennai
+stefan gilbert	pune
+elena salvatore	chennai
+bonnie bennet	chennai
+sam curran	bengaluru
+*/
+/*
+18. Retrieve a list of jobs with titles containing either 'Developer' or 'Engineer'.
+*/
+select job_title from jobs where job_title like '%Developer%' or job_title like '%Engineer%';
+/*
+Software Developer
+iOS Developer
+*/
+/*
+19. Retrieve a list of applicants and the jobs they have applied for, including those who have not 
+applied and jobs without applicants.
+*/
+select a.first_name, j.job_title from applicants a 
+            left join application ap on a.id=ap.applicant_id 
+            left join jobs j on j.id=ap.job_id ;
+/*
+harry	iOS Developer
+stefan	Digital Marketer
+elena	UX Designer
+bonnie	Data Analyst
+sam	Software Developer
+*/
+/*
+20. List all combinations of applicants and companies where the company is in a specific city and the 
+applicant has more than 2 years of experience. For example: city=Chennai.
+*/        
+select a.first_name, c.company_name, c.location from applicants a
+join application ap on a.id = ap.applicant_id
+join jobs j on ap.job_id = j.id
+join companies c on j.company_id = c.id
+WHERE c.location = 'Chennai' ;
+/*
+harry	hexaware	chennai
+elena	makingMinds	chennai
+bonnie	makingMinds	chennai
+*/    
